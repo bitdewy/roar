@@ -11,3 +11,11 @@
 *.lai
 *.la
 *.a
+Debug/
+Release/
+*.sdf
+*.suo
+*.opensdf
+ipch/
+*.user
+TestResults/
