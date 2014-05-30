@@ -1,6 +1,8 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -20,7 +22,10 @@ public:
     //  int uniqueFactors = factorsOf300.Distinct().Count();
     //  Console.WriteLine("There are {0} unique factors of 300.", uniqueFactors);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    // TODO(bitdewy): distinct
+    std::vector<int> factors_of_300{ 2, 2, 3, 5, 5 };
+    auto count = roar::linq::from(factors_of_300).count();
+    Assert::IsTrue(count == 5);
   }
 
   TEST_METHOD(countConditional) {
@@ -31,7 +36,9 @@ public:
     //  int oddNumbers = numbers.Count(n = > n % 2 == 1);
     //  Console.WriteLine("There are {0} odd numbers in the list.", oddNumbers);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto r = roar::linq::from(numbers).count([](int i) { return i % 2 == 1; });
+    Assert::IsTrue(r == 5);
   }
 
   TEST_METHOD(countNested) {
@@ -75,7 +82,9 @@ public:
 
     //  Console.WriteLine("The sum of the numbers is {0}.", numSum);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto r = roar::linq::from(numbers).sum();
+    Assert::IsTrue(r == 45);
   }
 
   TEST_METHOD(sumProjection) {
@@ -117,7 +126,9 @@ public:
 
     //  Console.WriteLine("The minimum number is {0}.", minNum);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto r = roar::linq::from(numbers).min();
+    Assert::IsTrue(r == 0);
   }
 
   TEST_METHOD(minProjection) {
@@ -130,7 +141,9 @@ public:
 
     //  Console.WriteLine("The shortest word is {0} characters long.", shortestWord);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words{ "cherry", "apple", "blueberry" };
+    auto shortest = roar::linq::from(words).min([](const std::string& w) { return w.size(); });
+    Assert::IsTrue(shortest == 5);
   }
 
   TEST_METHOD(minGrouped) {
@@ -176,7 +189,9 @@ public:
 
     //  Console.WriteLine("The maximum number is {0}.", maxNum);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto r = roar::linq::from(numbers).max();
+    Assert::IsTrue(r == 9);
   }
 
   TEST_METHOD(maxProjection) {
@@ -189,7 +204,9 @@ public:
 
     //  Console.WriteLine("The longest word is {0} characters long.", longestLength);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words{ "cherry", "apple", "blueberry" };
+    auto shortest = roar::linq::from(words).max([](const std::string& w) { return w.size(); });
+    Assert::IsTrue(shortest == 9);
   }
 
   TEST_METHOD(maxGrouped) {
@@ -235,7 +252,9 @@ public:
 
     //  Console.WriteLine("The average number is {0}.", averageNum);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto average = roar::linq::from(numbers).average();
+    Assert::IsTrue(abs(average - 4.5) < 1e-5);
   }
 
   TEST_METHOD(averageProjection) {
@@ -248,7 +267,9 @@ public:
 
     //  Console.WriteLine("The average word length is {0} characters.", averageLength);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words{ "cherry", "apple", "blueberry" };
+    auto r = roar::linq::from(words).average([](const std::string& s) { return s.size(); });
+    Assert::IsTrue(abs(r - 6.66666) < 1e-5);
   }
 
   TEST_METHOD(averageGrouped) {
@@ -277,7 +298,11 @@ public:
 
     //  Console.WriteLine("Total product of all numbers: {0}", product);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<double> doubles{ 1.7, 2.3, 1.9, 4.1, 2.9 };
+    auto product = roar::linq::from(doubles)
+      .aggregate([](double running, double next) { return running * next; });
+    Logger::WriteMessage(std::to_wstring(product).c_str());
+    Assert::IsTrue(abs(product - 88.33081) < 1e-5);
   }
 
   TEST_METHOD(aggregateSeed) {

@@ -5,11 +5,13 @@
 #define ROAR_LINQ_LINQ_HPP
 
 #include <algorithm>
+#include <numeric>
 
 #include "boost/optional.hpp"
 #include "cursor.hpp"
 #include "iterator.hpp"
 #include "select.hpp"
+#include "where.hpp"
 
 namespace roar {
   namespace linq {
@@ -32,27 +34,69 @@ namespace roar {
         return iterator();
       }
 
-      size_t count() const {
-        return 0;
+      element_type sum() {
+        return std::accumulate(begin(), end(), element_type());
+      }
+
+      element_type min() {
+        return *std::min_element(begin(), end());
+      }
+
+      template <typename Selector>
+      typename std::result_of<Selector(element_type)>::type min(Selector s) {
+        auto r = select(std::move(s));
+        return *std::min_element(std::begin(r), std::end(r));
+      }
+
+      element_type max() {
+        return *std::max_element(begin(), end());
+      }
+
+      template <typename Selector>
+      typename std::result_of<Selector(element_type)>::type max(Selector s) {
+        auto r = select(std::move(s));
+        return *std::max_element(std::begin(r), std::end(r));
+      }
+
+      typename std::iterator_traits<iterator>::difference_type count() const {
+        return std::distance(begin(), end());
       }
 
       template<typename Pred>
-      size_t count(Pred p) const {
-        return 0;
+      typename std::iterator_traits<iterator>::difference_type count(Pred p) const {
+        return std::count_if(begin(), end(), p);
+      }
+
+      double average() const {
+        assert(begin() != end());
+        return std::accumulate(begin(), end(), .0) / count();
+      }
+
+      template <typename Selector>
+      double average(Selector s) {
+        auto r = select(std::move(s));
+        assert(std::begin(r) != std::end(r));
+        return std::accumulate(std::begin(r), std::end(r), .0) / r.count();
+      }
+
+      template <typename Functor>
+      typename std::result_of<Functor(element_type, element_type)>::type aggregate(Functor f) {
+        assert(begin() != end());
+        return std::accumulate(++begin(), end(), *begin(), f);
       }
 
       bool any() const {
-        return false;
+        return any([](element_type e) { return true; });
       }
 
       template<typename Pred>
       bool any(Pred p) const {
-        return false;
+        return std::any_of(begin(), end(), p);
       }
 
       template<typename Pred>
       bool all(Pred p) const {
-        return false;
+        return std::all_of(begin(), end(), p);
       }
 
       bool empty() const {
@@ -63,9 +107,19 @@ namespace roar {
         return std::find(begin(), end(), value) != end();
       }
 
-      template <class Selector>
+      template<typename Container>
+      bool sequence_equal(const Container& other) {
+        return std::equal(begin(), end(), std::begin(other));
+      }
+
+      template <typename Selector>
       linq_query<linq_select<Collection, Selector>> select(Selector s) const {
         return linq_select<Collection, Selector>(collection_, std::move(s));
+      }
+
+      template <typename Predicate>
+      linq_query<linq_where<Collection, Predicate>> where(Predicate p) const {
+        return linq_where<Collection, Predicate>(collection_, std::move(p));
       }
 
     private:

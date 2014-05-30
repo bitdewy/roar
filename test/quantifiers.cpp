@@ -1,6 +1,8 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -20,7 +22,12 @@ public:
     //  bool iAfterE = words.Any(w = > w.Contains("ei"));
     //  Console.WriteLine("There is a word that contains in the list that contains 'ei': {0}", iAfterE);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words{ "believe", "relief", "receipt", "field" };
+    bool i_after_e = roar::linq::from(words)
+      .any([](const std::string& s) {
+        return s.find("ie") != std::string::npos;
+      });
+    Assert::IsTrue(i_after_e);
   }
 
   TEST_METHOD(anyGrouped) {
@@ -47,7 +54,9 @@ public:
     //  bool onlyOdd = numbers.All(n = > n % 2 == 1);
     //  Console.WriteLine("The list contains only odd numbers: {0}", onlyOdd);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 1, 11, 3, 19, 41, 65, 19 };
+    bool only_odd = roar::linq::from(numbers).all([](int i) { return i % 2 == 1; });
+    Assert::IsTrue(only_odd);
   }
 
   TEST_METHOD(allGrouped) {

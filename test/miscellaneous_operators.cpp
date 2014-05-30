@@ -1,6 +1,8 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -66,7 +68,10 @@ public:
 
     //  Console.WriteLine("The sequences match: {0}", match);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words1{ "cherry", "apple", "blueberry" };
+    std::vector<std::string> words2{ "cherry", "apple", "blueberry" };
+    auto r = roar::linq::from(words1).sequence_equal(words2);
+    Assert::IsTrue(r);
   }
 
   TEST_METHOD(equalAll2) {
@@ -80,7 +85,10 @@ public:
 
     //  Console.WriteLine("The sequences match: {0}", match);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words1{ "cherry", "apple", "blueberry" };
+    std::vector<std::string> words2{ "apple", "blueberry", "cherry" };
+    auto r = roar::linq::from(words1).sequence_equal(words2);
+    Assert::IsFalse(r);
   }
 
 };

@@ -27,5 +27,8 @@
     <ClInclude Include="linq\select.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="linq\where.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

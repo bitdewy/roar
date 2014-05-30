@@ -1,6 +1,9 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <list>
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 

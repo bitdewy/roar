@@ -1,6 +1,9 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <list>
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -29,7 +32,10 @@ public:
     //    Console.WriteLine(x);
     //  }
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto r = roar::linq::from(numbers).where([](int i) { return i < 5; });
+    std::vector<int> expect{ 4, 1, 3, 2, 0 };
+    Assert::IsTrue(std::equal(std::begin(expect), std::end(expect), std::begin(r)));
   }
 
   TEST_METHOD(whereSimple2) {
@@ -49,7 +55,29 @@ public:
     //    Console.WriteLine("{0} is sold out!", product.ProductName);
     //  }
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    struct product {
+      std::string product_name;
+      std::string category;
+      std::size_t unit_price;
+      std::size_t units_in_stock;
+      bool operator==(const product& other) {
+        return product_name == other.product_name &&
+          category == other.category &&
+          unit_price == other.unit_price &&
+          units_in_stock == other.units_in_stock;
+      }
+    };
+    std::list<product> products{
+      { "iphone", "cellphone", 599, 0 },
+      { "nexus", "cellphone", 499, 500 },
+      { "galaxy", "cellphone", 499, 800 }
+    };
+    auto r = roar::linq::from(products)
+      .where([](const product& p) {
+      return p.units_in_stock == 0;
+    });
+    std::list<product> expect{ { "iphone", "cellphone", 599, 0 } };
+    Assert::IsTrue(std::equal(std::begin(expect), std::end(expect), std::begin(r)));
   }
 
   TEST_METHOD(whereSimple3) {
@@ -69,7 +97,29 @@ public:
     //    Console.WriteLine("{0} is in stock and costs more than 3.00.", product.ProductName);
     //  }
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    struct product {
+      std::string product_name;
+      std::string category;
+      std::size_t unit_price;
+      std::size_t units_in_stock;
+      bool operator==(const product& other) {
+        return product_name == other.product_name &&
+          category == other.category &&
+          unit_price == other.unit_price &&
+          units_in_stock == other.units_in_stock;
+      }
+    };
+    std::list<product> products{
+      { "iphone", "cellphone", 599, 0 },
+      { "nexus", "cellphone", 499, 500 },
+      { "galaxy", "cellphone", 399, 800 }
+    };
+    auto r = roar::linq::from(products)
+      .where([](const product& p) {
+      return p.units_in_stock > 0 && p.unit_price > 400;
+    });
+    std::list<product> expect{ { "nexus", "cellphone", 499, 500 } };
+    Assert::IsTrue(std::equal(std::begin(expect), std::end(expect), std::begin(r)));
   }
 
   TEST_METHOD(whereDrilldown) {

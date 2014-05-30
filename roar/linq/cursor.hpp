@@ -28,12 +28,12 @@ namespace roar {
       }
 
       void increase() {
-        assert(("out of range", current_ == end_));
+        assert(("out of range", current_ != end_));
         ++current_;
       }
 
       void decrease() {
-        assert(("out of range", current_ == start_));
+        assert(("out of range", current_ != start_));
         --current_;
       }
 

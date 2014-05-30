@@ -291,7 +291,14 @@ public:
     //    Console.WriteLine(num);
     //  }
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    std::vector<std::string> digits{ "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+    auto r = roar::linq::from(numbers).where([](int i){ return i < 5; }).select([&digits](int i) { return digits[i]; });
+    std::vector<std::string> expects{ "four", "one", "three", "two", "zero" };
+    Assert::IsTrue(std::equal(
+      std::begin(expects),
+      std::end(expects),
+      std::begin(r)));
   }
 
   TEST_METHOD(selectManyCompoundFrom1) {

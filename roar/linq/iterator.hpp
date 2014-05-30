@@ -61,7 +61,7 @@ namespace roar {
       typedef ptrdiff_t difference_type;
       typedef typename std::add_pointer<typename Cursor::element_type>::type pointer;
 
-      linq_iterator() : cursor_() {}
+      linq_iterator() {}
 
       template<typename U, typename std::enable_if<std::is_convertible<U, Cursor>::value, int>::type = 0>
       linq_iterator(U&& c) : cursor_(std::forward<U>(c)) {}
