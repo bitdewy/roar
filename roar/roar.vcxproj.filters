@@ -30,5 +30,8 @@
     <ClInclude Include="linq\where.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="linq\groupby.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
