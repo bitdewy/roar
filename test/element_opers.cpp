@@ -1,6 +1,9 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <list>
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -26,7 +29,13 @@ public:
 
     //  ObjectDumper.Write(product12);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    struct product {
+      std::string name;
+      std::size_t type;
+    };
+    std::list<product> l{ { "nexus", 5 }, { "iphone", 5 }, { "galaxy", 5 }, { "galaxy", 4 }, { "iphone", 4 }, { "nexus", 4 } };
+    auto p = roar::linq::from(l).where([](const product& p) { return p.type == 4; }).first();
+    Assert::IsTrue(p.name == "galaxy" && p.type == 4 );
   }
 
   TEST_METHOD(firstCondition) {
@@ -37,7 +46,9 @@ public:
     //  string startsWithO = strings.First(s = > s[0] == 'o');
     //  Console.WriteLine("A string starting with 'o': {0}", startsWithO);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> strings{ "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+    auto starts_with_o = roar::linq::from(strings).first([](const std::string& s) { return s[0] == 'o'; });
+    Assert::IsTrue(starts_with_o == "one");
   }
 
   TEST_METHOD(firstOrDefaultSimple) {
@@ -48,7 +59,9 @@ public:
     //  int firstNumOrDefault = numbers.FirstOrDefault();
     //  Console.WriteLine(firstNumOrDefault);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{};
+    int first_or_default = roar::linq::from(numbers).first_or_default();
+    Assert::IsTrue(first_or_default == 0);
   }
 
   TEST_METHOD(firstOrDefaultCondition) {

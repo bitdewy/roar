@@ -27,7 +27,11 @@ namespace roar {
       linq_query(U&& c) : collection_(std::forward<U>(c)) {}
 
       iterator begin() const {
-        return iterator(collection_.get_cursor());
+        auto c = collection_.get_cursor();
+        if (c.empty()) {
+          return iterator();
+        }
+        return iterator(c);
       }
 
       iterator end() const {
@@ -38,13 +42,19 @@ namespace roar {
         return std::accumulate(begin(), end(), element_type());
       }
 
+      template <typename Condition>
+      typename std::result_of<Condition(element_type)>::type sum(Condition c) {
+        auto r = select(std::move(c));
+        return std::accumulate(std::begin(r), std::end(r), std::result_of<Condition(element_type)>::type());
+      }
+
       element_type min() {
         return *std::min_element(begin(), end());
       }
 
-      template <typename Selector>
-      typename std::result_of<Selector(element_type)>::type min(Selector s) {
-        auto r = select(std::move(s));
+      template <typename Condition>
+      typename std::result_of<Condition(element_type)>::type min(Condition c) {
+        auto r = select(std::move(c));
         return *std::min_element(std::begin(r), std::end(r));
       }
 
@@ -52,9 +62,9 @@ namespace roar {
         return *std::max_element(begin(), end());
       }
 
-      template <typename Selector>
-      typename std::result_of<Selector(element_type)>::type max(Selector s) {
-        auto r = select(std::move(s));
+      template <typename Condition>
+      typename std::result_of<Condition(element_type)>::type max(Condition c) {
+        auto r = select(std::move(c));
         return *std::max_element(std::begin(r), std::end(r));
       }
 
@@ -64,7 +74,7 @@ namespace roar {
 
       template<typename Pred>
       typename std::iterator_traits<iterator>::difference_type count(Pred p) const {
-        return std::count_if(begin(), end(), p);
+        return std::count_if(begin(), end(), std::move(p));
       }
 
       double average() const {
@@ -72,9 +82,9 @@ namespace roar {
         return std::accumulate(begin(), end(), .0) / count();
       }
 
-      template <typename Selector>
-      double average(Selector s) {
-        auto r = select(std::move(s));
+      template <typename Condition>
+      double average(Condition c) {
+        auto r = select(std::move(c));
         assert(std::begin(r) != std::end(r));
         return std::accumulate(std::begin(r), std::end(r), .0) / r.count();
       }
@@ -82,7 +92,7 @@ namespace roar {
       template <typename Functor>
       typename std::result_of<Functor(element_type, element_type)>::type aggregate(Functor f) {
         assert(begin() != end());
-        return std::accumulate(++begin(), end(), *begin(), f);
+        return std::accumulate(++begin(), end(), *begin(), std::move(f));
       }
 
       bool any() const {
@@ -91,12 +101,12 @@ namespace roar {
 
       template<typename Pred>
       bool any(Pred p) const {
-        return std::any_of(begin(), end(), p);
+        return std::any_of(begin(), end(), std::move(p));
       }
 
       template<typename Pred>
       bool all(Pred p) const {
-        return std::all_of(begin(), end(), p);
+        return std::all_of(begin(), end(), std::move(p));
       }
 
       bool empty() const {
@@ -107,9 +117,33 @@ namespace roar {
         return std::find(begin(), end(), value) != end();
       }
 
-      template<typename Container>
+      template <typename Container>
       bool sequence_equal(const Container& other) {
         return std::equal(begin(), end(), std::begin(other));
+      }
+
+      reference_type first() {
+        assert(begin() != end());
+        return *begin();
+      }
+
+      template <typename Pred>
+      element_type first(Pred p) {
+        auto r = where(std::move(p));
+        assert(std::begin(r) != std::end(r));
+        return *std::begin(r);
+      }
+
+      element_type first_or_default() {
+        if (begin() != end()) {
+          return first();
+        }
+        return element_type();
+      }
+
+      template <typename T>
+      typename T to() {
+        return T(begin(), end());
       }
 
       template <typename Selector>
@@ -131,6 +165,7 @@ namespace roar {
     const linq_query<T>& from(const linq_query<T>& c) {
       return c;
     }
+
     template <typename Container>
     linq_query<iter_cursor<typename Container::iterator>> from(Container& c) {
       return from(std::begin(c), std::end(c));

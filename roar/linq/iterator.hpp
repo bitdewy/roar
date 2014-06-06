@@ -91,6 +91,12 @@ namespace roar {
         return *this;
       }
 
+      linq_iterator operator++(int) {
+        auto temp = *this;
+        ++(*this);
+        return temp;
+      }
+
     private:
       boost::optional<Cursor> cursor_;
     };

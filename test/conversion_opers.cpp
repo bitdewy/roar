@@ -1,6 +1,9 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <list>
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -30,6 +33,12 @@ public:
     //    Console.WriteLine(doublesArray[d]);
     //  }
     //}
+    std::vector<double> doubles{ 1.7, 2.3, 1.9, 4.1, 2.9 };
+    auto r = roar::linq::from(doubles).to<std::vector<double>>();
+    Assert::IsTrue(std::equal(
+      std::begin(doubles),
+      std::end(doubles),
+      std::begin(r)));
     Assert::Fail(L"TODO(bitdewy): ");
   }
 
@@ -51,6 +60,12 @@ public:
     //    Console.WriteLine(w);
     //  }
     //}
+    std::vector<std::string> words{ "cherry", "apple", "blueberry" };
+    auto r = roar::linq::from(words).to<std::list<std::string>>();
+    Assert::IsTrue(std::equal(
+      std::begin(words),
+      std::end(words),
+      std::begin(r)));
     Assert::Fail(L"TODO(bitdewy): ");
   }
 

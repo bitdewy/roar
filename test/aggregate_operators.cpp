@@ -97,7 +97,9 @@ public:
 
     //  Console.WriteLine("There are a total of {0} characters in these words.", totalChars);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words{ "cherry", "apple", "blueberry" };
+    auto r = roar::linq::from(words).sum([](const std::string& word) { return word.size(); });
+    Assert::IsTrue(r == 20);
   }
 
   TEST_METHOD(sumGrouped) {
