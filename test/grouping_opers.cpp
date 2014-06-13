@@ -1,6 +1,8 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -32,6 +34,17 @@ public:
     //    }
     //  }
     //}
+
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto numnbers_groups = roar::linq::from(numbers).group_by([](int i) { return i % 5; });
+    for (auto group = std::begin(numnbers_groups); group != std::end(numnbers_groups); ++group) {
+      auto xx = group->key;
+      auto elem = group->begin();
+      auto elem_end = group->end();
+      for (; elem != elem_end; ++elem) {
+        Logger::WriteMessage(std::to_wstring(*elem).c_str());
+      }
+    }
     Assert::Fail(L"TODO(bitdewy): ");
   }
 

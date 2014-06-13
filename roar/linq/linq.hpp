@@ -9,6 +9,7 @@
 
 #include "boost/optional.hpp"
 #include "cursor.hpp"
+#include "groupby.hpp"
 #include "iterator.hpp"
 #include "select.hpp"
 #include "where.hpp"
@@ -154,6 +155,11 @@ namespace roar {
       template <typename Predicate>
       linq_query<linq_where<Collection, Predicate>> where(Predicate p) const {
         return linq_where<Collection, Predicate>(collection_, std::move(p));
+      }
+
+      template <typename KeyFn>
+      linq_query<linq_groupby<Collection, KeyFn>> group_by(KeyFn fn) const {
+        return linq_groupby<Collection, KeyFn>(collection_, std::move(fn));
       }
 
     private:
