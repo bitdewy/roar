@@ -83,8 +83,8 @@ namespace roar {
         return std::accumulate(begin(), end(), .0) / count();
       }
 
-      template <typename Condition>
-      double average(Condition c) {
+      template <typename Selector>
+      double average(Selector c) {
         auto r = select(std::move(c));
         assert(std::begin(r) != std::end(r));
         return std::accumulate(std::begin(r), std::end(r), .0) / r.count();

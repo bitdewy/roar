@@ -69,7 +69,41 @@ public:
 
     //  ObjectDumper.Write(categoryCounts
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    struct product {
+      std::string product_name;
+      std::string category;
+      std::size_t unit_price;
+      bool operator==(const product& other) const {
+        return product_name == other.product_name &&
+          category == other.category &&
+          unit_price == other.unit_price;
+      }
+    };
+    std::list<product> products {
+      { "iphone", "cellphone", 599 },
+      { "nexus", "cellphone", 499 },
+      { "galaxy", "cellphone", 499 },
+      { "ipad", "pad", 299 },
+      { "nexus7", "pad", 399 },
+      { "galaxy", "pad", 499 }
+    };
+    using anonymous = struct dummy {
+      std::string category;
+      size_t count;
+      bool operator==(const dummy& other) {
+        return category == other.category && count == other.count;
+      }
+    };
+    auto group = roar::linq::from(products)
+      .group_by([](const auto& p) { return p.category; })
+      .select([](const auto& g) -> anonymous {
+        return { g.key, roar::linq::from(g).count() };
+      });
+    std::list<anonymous> expect{
+      { "cellphone", 3 },
+      { "pad", 3 },
+    };
+    Assert::IsTrue(std::equal(std::begin(group), std::end(group), std::begin(expect)));
   }
 
   TEST_METHOD(sumSimple) {
@@ -287,7 +321,44 @@ public:
 
     //  ObjectDumper.Write(categories);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    struct product {
+      std::string product_name;
+      std::string category;
+      std::size_t unit_price;
+      bool operator==(const product& other) const {
+        return product_name == other.product_name &&
+          category == other.category &&
+          unit_price == other.unit_price;
+      }
+    };
+    std::list<product> products{
+      { "iphone", "cellphone", 599 },
+      { "nexus", "cellphone", 499 },
+      { "galaxy", "cellphone", 699 },
+      { "ipad", "pad", 299 },
+      { "nexus7", "pad", 399 },
+      { "galaxy", "pad", 499 }
+    };
+
+    using anonymous = struct dummy {
+      std::string category;
+      double average_price;
+      bool operator==(const dummy& other) {
+        return category == other.category && abs(average_price - other.average_price) < .00001;
+      }
+    };
+
+    auto grouped = roar::linq::from(products)
+      .group_by([](const auto& p) { return p.category; })
+      .select([](const auto& g) -> anonymous {
+        return { g.key, roar::linq::from(g).average([](const auto& i) { return i.unit_price; }) };
+    });
+
+    std::list<anonymous> expect{
+      { "cellphone", 599. },
+      { "pad", 399. }
+    };
+    Assert::IsTrue(std::equal(std::begin(grouped), std::end(grouped), std::begin(expect)));
   }
 
   TEST_METHOD(aggregateSimple) {

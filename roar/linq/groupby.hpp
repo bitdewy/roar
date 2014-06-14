@@ -17,12 +17,13 @@ namespace roar {
       typedef std::list<typename inner_cursor::element_type> element_list;
 
       struct group_type {
-        typename element_list::iterator start;
-        typename element_list::iterator fin;
+        typedef typename element_list::iterator iterator;
+        iterator start;
+        iterator fin;
         key_type key;
 
-        typename element_list::iterator begin() const { return start; }
-        typename element_list::iterator end() const { return fin; }
+        iterator begin() const { return start; }
+        iterator end() const { return fin; }
 
         template <typename Container>
         bool operator==(const Container& other) {
@@ -67,7 +68,7 @@ namespace roar {
               cursor.increase();
             }
           }
-          
+
           typename std::list<group_type>::iterator begin() {
             return groups_.begin();
           }

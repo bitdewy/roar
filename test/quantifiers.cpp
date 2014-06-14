@@ -43,7 +43,40 @@ public:
 
     //  ObjectDumper.Write(productGroups, 1);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+
+    struct product {
+      std::string product_name;
+      std::string category;
+      std::size_t unit_price;
+      bool operator==(const product& other) const {
+        return product_name == other.product_name &&
+          category == other.category &&
+          unit_price == other.unit_price;
+      }
+    };
+    std::list<product> products{
+      { "iphone", "cellphone", 599 },
+      { "nexus", "cellphone", 499 },
+      { "galaxy", "cellphone", 499 },
+      { "ipad", "pad", 299 },
+      { "nexus7", "pad", 399 },
+      { "galaxy", "pad", 499 }
+    };
+    auto group = roar::linq::from(products)
+      .group_by([](const auto& p) { return p.category; })
+      .where([](const auto& g) {
+      return roar::linq::from(g).any([](const auto& i) {
+        return i.unit_price < 399;
+      });
+    });
+    std::list<std::list<product>> expect{
+      {
+        { "ipad", "pad", 299 },
+        { "nexus7", "pad", 399 },
+        { "galaxy", "pad", 499 }
+      }
+    };
+    Assert::IsTrue(std::equal(std::begin(group), std::end(group), std::begin(expect)));
   }
 
   TEST_METHOD(allSimple) {
@@ -71,7 +104,37 @@ public:
     //    select new{ Category = g.Key, Products = g };
     //  ObjectDumper.Write(productGroups, 1);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    struct product {
+      std::string product_name;
+      std::string category;
+      std::size_t unit_price;
+      bool operator==(const product& other) const {
+        return product_name == other.product_name &&
+          category == other.category &&
+          unit_price == other.unit_price;
+      }
+    };
+    std::list<product> products{
+      { "iphone", "cellphone", 599 },
+      { "nexus", "cellphone", 499 },
+      { "galaxy", "cellphone", 499 },
+      { "ipad", "pad", 299 },
+      { "nexus7", "pad", 399 },
+      { "galaxy", "pad", 499 }
+    };
+    auto group = roar::linq::from(products)
+      .group_by([](const auto& p) { return p.category; })
+      .where([](const auto& g) { 
+        return roar::linq::from(g).all([](const auto& i) {
+          return i.unit_price > 399;
+        });
+      });
+    std::list<std::list<product>> expect{ {
+      { "iphone", "cellphone", 599 },
+      { "nexus", "cellphone", 499 },
+      { "galaxy", "cellphone", 499 }
+    } };
+    Assert::IsTrue(std::equal(std::begin(group), std::end(group), std::begin(expect)));
   }
 
 };
