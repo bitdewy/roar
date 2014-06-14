@@ -1,6 +1,7 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <list>
 #include <vector>
 
 #include "CppUnitTest.h"
@@ -37,15 +38,9 @@ public:
 
     std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
     auto numnbers_groups = roar::linq::from(numbers).group_by([](int i) { return i % 5; });
-    for (auto group = std::begin(numnbers_groups); group != std::end(numnbers_groups); ++group) {
-      auto xx = group->key;
-      auto elem = group->begin();
-      auto elem_end = group->end();
-      for (; elem != elem_end; ++elem) {
-        Logger::WriteMessage(std::to_wstring(*elem).c_str());
-      }
-    }
-    Assert::Fail(L"TODO(bitdewy): ");
+    
+    std::vector<std::vector<int>> expect{ { 5, 0 }, { 4, 9 }, { 1, 6 }, { 3, 8 }, { 7, 2 } };
+    Assert::IsTrue(std::equal(std::begin(numnbers_groups), std::end(numnbers_groups), std::begin(expect)));
   }
 
   TEST_METHOD(groupBySimple2) {
@@ -68,7 +63,32 @@ public:
     //    }
     //  }
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<std::string> words{ "blueberry", "chimpanzee", "abacus", "banana", "apple", "cheese" };
+    using anonymous = struct dummy {
+      char key;
+      std::list<std::string> words;
+      bool operator==(const dummy& other) {
+        return key == other.key && words == other.words;
+      }
+    };
+    auto word_groups = roar::linq::from(words)
+      .group_by([](const std::string& s) { return s[0]; })
+      .select([](const auto& g) -> anonymous {
+        std::list<std::string> words;
+        std::for_each(std::begin(g), std::end(g), [&words](const auto& w) {
+          words.push_back(w);
+        });
+        return { g.key, words };
+      });
+    std::list<anonymous> expect;
+    std::list<std::string> start_with_b{ "blueberry", "banana" };
+    expect.push_back({ 'b', start_with_b });
+    std::list<std::string> start_with_c{ "chimpanzee", "cheese" };
+    expect.push_back({ 'c', start_with_c });
+    std::list<std::string> start_with_a{ "abacus", "apple" };
+    expect.push_back({ 'a', start_with_a });
+
+    Assert::IsTrue(std::equal(std::begin(word_groups), std::end(word_groups), std::begin(expect)));
   }
 
   TEST_METHOD(groupBySimple3) {
@@ -84,7 +104,61 @@ public:
 
     //  ObjectDumper.Write(orderGroups, 1);
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    struct product {
+      std::string product_name;
+      std::string category;
+      std::size_t unit_price;
+      bool operator==(const product& other) const {
+        return product_name == other.product_name &&
+          category == other.category &&
+          unit_price == other.unit_price;
+      }
+    };
+    std::list<product> products{
+      { "iphone", "cellphone", 599 },
+      { "nexus", "cellphone", 499 },
+      { "galaxy", "cellphone", 499 },
+      { "ipad", "pad", 299 },
+      { "nexus7", "pad", 399 },
+      { "galaxy", "pad", 499 }
+    };
+
+    using anonymous = struct dummy {
+      std::string category;
+      std::list<product> products;
+      bool operator==(const dummy& other) {
+        return category == other.category && products == other.products;
+      }
+    };
+    std::list<product> grouped;
+    auto order_groups = roar::linq::from(products)
+      .group_by([](const auto& p) { return p.category; })
+      .select([&grouped](const auto& g) -> anonymous {
+        grouped.clear();
+        std::for_each(std::begin(g), std::end(g), [&grouped](const auto& p) {
+          grouped.push_back(p);
+        });
+        return { g.key, grouped };
+    });
+
+    std::list<product> cellphone{
+      { "iphone", "cellphone", 599 },
+      { "nexus", "cellphone", 499 },
+      { "galaxy", "cellphone", 499 }
+    };
+
+    std::list<product> pad{
+      { "ipad", "pad", 299 },
+      { "nexus7", "pad", 399 },
+      { "galaxy", "pad", 499 }
+    };
+
+    std::list<anonymous> expect{
+      { "cellphone", cellphone },
+      { "pad", pad }
+    };
+
+    Assert::IsTrue(std::equal(std::begin(order_groups), std::end(order_groups), std::begin(expect)));
   }
 
   TEST_METHOD(groupByNested) {

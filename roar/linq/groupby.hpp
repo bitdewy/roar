@@ -23,6 +23,11 @@ namespace roar {
 
         typename element_list::iterator begin() const { return start; }
         typename element_list::iterator end() const { return fin; }
+
+        template <typename Container>
+        bool operator==(const Container& other) {
+          return std::equal(start, fin, std::begin(other));
+        }
       };
 
     public:
