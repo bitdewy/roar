@@ -1,0 +1,569 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Roar by bitdewy</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Roar</h1>
+        <p>A C++11/14 LINQ Implemention</p>
+        <p class="view"><a href="https://github.com/bitdewy/roar">View the Project on GitHub <small>bitdewy/roar</small></a></p>
+        <ul>
+          <li><a href="https://github.com/bitdewy/roar/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/bitdewy/roar/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/bitdewy/roar">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="roar" class="anchor" href="#roar"><span class="octicon octicon-link"></span></a>roar</h1>
+
+<p>A C++11/14 LINQ Implemention</p>
+
+<h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>A C++11/14 LINQ Implemention for fun!</p>
+
+<h2>
+<a name="build-environment" class="anchor" href="#build-environment"><span class="octicon octicon-link"></span></a>Build Environment</h2>
+
+<p><a href="http://www.visualstudio.com/">Visual Studio 2013</a> with <a href="http://aka.ms/Icp591">Visual C++ Compiler November 2013 CTP</a></p>
+
+<h2>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p><a href="http://www.boost.org/doc/libs/1_55_0/libs/optional/doc/html/index.html">Boost.Optional</a></p>
+
+<p><a href="http://msdn.microsoft.com/en-us/library/hh598953.aspx">Microsoft::VisualStudio::CppUnitTestFramework</a></p>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>All examples are based on <a href="http://code.msdn.microsoft.com/101-LINQ-Samples-3fb9811b/viewsamplepack">101 LINQ Samples</a></p>
+
+<h3>
+<a name="any" class="anchor" href="#any"><span class="octicon octicon-link"></span></a>any</h3>
+
+<p>This sample uses Any to determine if any of the words in the array contain the substring 'ei'.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">{</span> <span class="s">"believe"</span><span class="p">,</span> <span class="s">"relief"</span><span class="p">,</span> <span class="s">"receipt"</span><span class="p">,</span> <span class="s">"field"</span> <span class="p">};</span>
+<span class="kt">bool</span> <span class="n">i_after_e</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">any</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">"ie"</span><span class="p">)</span> <span class="o">!=</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">;</span>
+  <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses Any to return a grouped a list of products only for categories that have at least one product that is out of stock.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">product_name</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">product_name</span> <span class="o">&amp;&amp;</span>
+      <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span>
+      <span class="n">unit_price</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">unit_price</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"ipad"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">299</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus7"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">399</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">auto</span> <span class="n">group</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">group_by</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">category</span><span class="p">;</span> <span class="p">})</span>
+  <span class="p">.</span><span class="n">where</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">g</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">g</span><span class="p">).</span><span class="n">any</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">.</span><span class="n">unit_price</span> <span class="o">&lt;</span> <span class="mi">399</span><span class="p">;</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="all" class="anchor" href="#all"><span class="octicon octicon-link"></span></a>all</h3>
+
+<p>This sample uses All to determine whether an array contains only odd numbers.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">19</span> <span class="p">};</span>
+<span class="kt">bool</span> <span class="n">only_odd</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">all</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">;</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses All to return a grouped a list of products only for categories that have all of their products in stock.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">product_name</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">product_name</span> <span class="o">&amp;&amp;</span>
+      <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span>
+      <span class="n">unit_price</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">unit_price</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"ipad"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">299</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus7"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">399</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">auto</span> <span class="n">group</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">group_by</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">category</span><span class="p">;</span> <span class="p">})</span>
+  <span class="p">.</span><span class="n">where</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">g</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="k">return</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">g</span><span class="p">).</span><span class="n">all</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">i</span><span class="p">.</span><span class="n">unit_price</span> <span class="o">&gt;</span> <span class="mi">399</span><span class="p">;</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="average" class="anchor" href="#average"><span class="octicon octicon-link"></span></a>average</h3>
+
+<p>This sample uses Average to get the average of all numbers in an array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">average</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">average</span><span class="p">();</span>
+</pre></div>
+
+<p>This sample uses Average to get the average length of the words in the array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">{</span> <span class="s">"cherry"</span><span class="p">,</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"blueberry"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words</span><span class="p">).</span><span class="n">average</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses Average to get the average price of each category's products.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">product_name</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">product_name</span> <span class="o">&amp;&amp;</span>
+      <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span>
+      <span class="n">unit_price</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">unit_price</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">699</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"ipad"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">299</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus7"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">399</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">using</span> <span class="n">anonymous</span> <span class="o">=</span> <span class="k">struct</span> <span class="n">dummy</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="kt">double</span> <span class="n">average_price</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">dummy</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span> <span class="n">abs</span><span class="p">(</span><span class="n">average_price</span> <span class="o">-</span> <span class="n">other</span><span class="p">.</span><span class="n">average_price</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">.00001</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">auto</span> <span class="n">grouped</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">group_by</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">category</span><span class="p">;</span> <span class="p">})</span>
+  <span class="p">.</span><span class="n">select</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">g</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">anonymous</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="n">g</span><span class="p">.</span><span class="n">key</span><span class="p">,</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">g</span><span class="p">).</span><span class="n">average</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span><span class="p">.</span><span class="n">unit_price</span><span class="p">;</span> <span class="p">})</span> <span class="p">};</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="aggregate" class="anchor" href="#aggregate"><span class="octicon octicon-link"></span></a>aggregate</h3>
+
+<p>This sample uses Aggregate to create a running product on the array that calculates the total product of all elements.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">doubles</span><span class="p">{</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">,</span> <span class="mf">2.9</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">product</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">doubles</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">aggregate</span><span class="p">([](</span><span class="kt">double</span> <span class="n">running</span><span class="p">,</span> <span class="kt">double</span> <span class="n">next</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">running</span> <span class="o">*</span> <span class="n">next</span><span class="p">;</span> <span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="count" class="anchor" href="#count"><span class="octicon octicon-link"></span></a>count</h3>
+
+<p>This sample uses Count to get the number of unique factors of 300.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">factors_of_300</span><span class="p">{</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">count</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">factors_of_300</span><span class="p">).</span><span class="n">count</span><span class="p">();</span>
+</pre></div>
+
+<p>This sample uses Count to get the number of odd ints in the array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">count</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">;</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses Count to return a list of categories and how many products each has.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">product_name</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">product_name</span> <span class="o">&amp;&amp;</span>
+      <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span>
+      <span class="n">unit_price</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">unit_price</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span> <span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"ipad"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">299</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus7"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">399</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">using</span> <span class="n">anonymous</span> <span class="o">=</span> <span class="k">struct</span> <span class="n">dummy</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="kt">size_t</span> <span class="n">count</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">dummy</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span> <span class="n">count</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">auto</span> <span class="n">group</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">group_by</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">category</span><span class="p">;</span> <span class="p">})</span>
+  <span class="p">.</span><span class="n">select</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">g</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">anonymous</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="n">g</span><span class="p">.</span><span class="n">key</span><span class="p">,</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">g</span><span class="p">).</span><span class="n">count</span><span class="p">()</span> <span class="p">};</span>
+  <span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="first" class="anchor" href="#first"><span class="octicon octicon-link"></span></a>first</h3>
+
+<p>This sample uses First to return the first matching element as a Product, instead of as a sequence containing a Product.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">l</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="mi">5</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="mi">5</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="mi">5</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="mi">4</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="mi">4</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="mi">4</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">where</span><span class="p">([](</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">type</span> <span class="o">==</span> <span class="mi">4</span><span class="p">;</span> <span class="p">}).</span><span class="n">first</span><span class="p">();</span>
+</pre></div>
+
+<p>This sample uses First to find the first element in the array that starts with 'o'.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">strings</span><span class="p">{</span> <span class="s">"zero"</span><span class="p">,</span> <span class="s">"one"</span><span class="p">,</span> <span class="s">"two"</span><span class="p">,</span> <span class="s">"three"</span><span class="p">,</span> <span class="s">"four"</span><span class="p">,</span> <span class="s">"five"</span><span class="p">,</span> <span class="s">"six"</span><span class="p">,</span> <span class="s">"seven"</span><span class="p">,</span> <span class="s">"eight"</span><span class="p">,</span> <span class="s">"nine"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">starts_with_o</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">strings</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">first</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'o'</span><span class="p">;</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses FirstOrDefault to try to return the first element of the sequence, unless there are no elements, in which case the default value for that type is returned.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{};</span>
+<span class="kt">int</span> <span class="n">first_or_default</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">first_or_default</span><span class="p">();</span>
+</pre></div>
+
+<h3>
+<a name="group_by" class="anchor" href="#group_by"><span class="octicon octicon-link"></span></a>group_by</h3>
+
+<p>This sample uses group by to partition a list of numbers by their remainder when divided by 5.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">numnbers_groups</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">group_by</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">5</span><span class="p">;</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses group by to partition a list of words by their first letter.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">{</span> <span class="s">"blueberry"</span><span class="p">,</span> <span class="s">"chimpanzee"</span><span class="p">,</span> <span class="s">"abacus"</span><span class="p">,</span> <span class="s">"banana"</span><span class="p">,</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"cheese"</span> <span class="p">};</span>
+<span class="k">using</span> <span class="n">anonymous</span> <span class="o">=</span> <span class="k">struct</span> <span class="n">dummy</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">key</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">dummy</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">key</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">key</span> <span class="o">&amp;&amp;</span> <span class="n">words</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">words</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">auto</span> <span class="n">word_groups</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">group_by</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="p">})</span>
+  <span class="p">.</span><span class="n">select</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">g</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">anonymous</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">for_each</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="p">[</span><span class="o">&amp;</span><span class="n">words</span><span class="p">](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">words</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="n">g</span><span class="p">.</span><span class="n">key</span><span class="p">,</span> <span class="n">words</span> <span class="p">};</span>
+  <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses group by to partition a list of products by category.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">product_name</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">product_name</span> <span class="o">&amp;&amp;</span>
+      <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span>
+      <span class="n">unit_price</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">unit_price</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"ipad"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">299</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus7"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">399</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"pad"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">using</span> <span class="n">anonymous</span> <span class="o">=</span> <span class="k">struct</span> <span class="n">dummy</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">dummy</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span> <span class="n">products</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">products</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">grouped</span><span class="p">;</span>
+<span class="k">auto</span> <span class="n">order_groups</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">group_by</span><span class="p">([](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">category</span><span class="p">;</span> <span class="p">})</span>
+  <span class="p">.</span><span class="n">select</span><span class="p">([</span><span class="o">&amp;</span><span class="n">grouped</span><span class="p">](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">g</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">anonymous</span> <span class="p">{</span>
+    <span class="n">grouped</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">for_each</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="p">[</span><span class="o">&amp;</span><span class="n">grouped</span><span class="p">](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">grouped</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="n">g</span><span class="p">.</span><span class="n">key</span><span class="p">,</span> <span class="n">grouped</span> <span class="p">};</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="max" class="anchor" href="#max"><span class="octicon octicon-link"></span></a>max</h3>
+
+<p>This sample uses Max to get the highest number in an array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">max</span><span class="p">();</span>
+</pre></div>
+
+<p>This sample uses Max to get the length of the longest word in an array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">{</span> <span class="s">"cherry"</span><span class="p">,</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"blueberry"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">shortest</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words</span><span class="p">).</span><span class="n">max</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">w</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="min" class="anchor" href="#min"><span class="octicon octicon-link"></span></a>min</h3>
+
+<p>This sample uses Min to get the lowest number in an array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">min</span><span class="p">();</span>
+</pre></div>
+
+<p>This sample uses Min to get the length of the shortest word in an array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">{</span> <span class="s">"cherry"</span><span class="p">,</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"blueberry"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">shortest</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words</span><span class="p">).</span><span class="n">min</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">w</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="select" class="anchor" href="#select"><span class="octicon octicon-link"></span></a>select</h3>
+
+<p>This sample uses select to return a sequence of just the names of a list of products.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">l</span><span class="p">{</span> <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="mi">5</span> <span class="p">},</span> <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="mi">5</span> <span class="p">},</span> <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="mi">5</span> <span class="p">}</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">names</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">l</span><span class="p">).</span><span class="n">select</span><span class="p">([](</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">Assert</span><span class="o">::</span><span class="n">IsTrue</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">equal</span><span class="p">(</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="n">l</span><span class="p">),</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="n">l</span><span class="p">),</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="n">names</span><span class="p">),</span>
+  <span class="p">[](</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">));</span>
+</pre></div>
+
+<p>This sample combines select and where to make a simple query that returns the text form of each digit less than 5.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">digits</span><span class="p">{</span> <span class="s">"zero"</span><span class="p">,</span> <span class="s">"one"</span><span class="p">,</span> <span class="s">"two"</span><span class="p">,</span> <span class="s">"three"</span><span class="p">,</span> <span class="s">"four"</span><span class="p">,</span> <span class="s">"five"</span><span class="p">,</span> <span class="s">"six"</span><span class="p">,</span> <span class="s">"seven"</span><span class="p">,</span> <span class="s">"eight"</span><span class="p">,</span> <span class="s">"nine"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">where</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> <span class="k">return</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="p">}).</span><span class="n">select</span><span class="p">([</span><span class="o">&amp;</span><span class="n">digits</span><span class="p">](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">digits</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses select to produce a sequence of strings representing the text version of a sequence of ints.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">strings</span><span class="p">{</span> <span class="s">"zero"</span><span class="p">,</span> <span class="s">"one"</span><span class="p">,</span> <span class="s">"two"</span><span class="p">,</span> <span class="s">"three"</span><span class="p">,</span> <span class="s">"four"</span><span class="p">,</span> <span class="s">"five"</span><span class="p">,</span> <span class="s">"six"</span><span class="p">,</span> <span class="s">"seven"</span><span class="p">,</span> <span class="s">"eight"</span><span class="p">,</span> <span class="s">"nine"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">text_nums</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">v</span><span class="p">).</span><span class="n">select</span><span class="p">([</span><span class="o">&amp;</span><span class="n">strings</span><span class="p">](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">strings</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses select to produce a sequence of the uppercase and lowercase versions of each word in the original array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">{</span> <span class="s">"aPPLE"</span><span class="p">,</span> <span class="s">"BlUeBeRrY"</span><span class="p">,</span> <span class="s">"cHeRry"</span> <span class="p">};</span>
+<span class="k">using</span> <span class="n">anonymous</span> <span class="o">=</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">upper</span><span class="p">;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">lower</span><span class="p">;</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">upper_lower_words</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">select</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">anonymous</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">upper</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">to_upper_copy</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">lower</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">to_lower_copy</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span> <span class="p">};</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>This sample uses select to produce a sequence containing text representations of digits and whether their length is even or odd.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">strings</span><span class="p">{</span> <span class="s">"zero"</span><span class="p">,</span> <span class="s">"one"</span><span class="p">,</span> <span class="s">"two"</span><span class="p">,</span> <span class="s">"three"</span><span class="p">,</span> <span class="s">"four"</span><span class="p">,</span> <span class="s">"five"</span><span class="p">,</span> <span class="s">"six"</span><span class="p">,</span> <span class="s">"seven"</span><span class="p">,</span> <span class="s">"eight"</span><span class="p">,</span> <span class="s">"nine"</span> <span class="p">};</span>
+<span class="k">using</span> <span class="n">anonymous</span> <span class="o">=</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">digit</span><span class="p">;</span> <span class="kt">bool</span> <span class="n">even</span><span class="p">;</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">digit_odd_evens</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">select</span><span class="p">([</span><span class="o">&amp;</span><span class="n">strings</span><span class="p">](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">anonymous</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="n">strings</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">};</span> <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>
+
+<p>This sample uses select to produce a sequence containing some properties of Products, including UnitPrice which is renamed to Price in the resulting type.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">using</span> <span class="n">anonymous</span> <span class="o">=</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">price</span><span class="p">;</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">select</span><span class="p">([](</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">anonymous</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">{</span> <span class="n">p</span><span class="p">.</span><span class="n">product_name</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">category</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">unit_price</span> <span class="p">};</span>
+  <span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="skip" class="anchor" href="#skip"><span class="octicon octicon-link"></span></a>skip</h3>
+
+<p>This sample uses Skip to get all but the first 4 elements of the array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+</pre></div>
+
+<h3>
+<a name="sum" class="anchor" href="#sum"><span class="octicon octicon-link"></span></a>sum</h3>
+
+<p>This sample uses Sum to get the total of the numbers in an array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">sum</span><span class="p">();</span>
+</pre></div>
+
+<p>This sample uses Sum to get the total number of characters of all words in the array.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span><span class="p">{</span> <span class="s">"cherry"</span><span class="p">,</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"blueberry"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words</span><span class="p">).</span><span class="n">sum</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">word</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">word</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="sequence_equal" class="anchor" href="#sequence_equal"><span class="octicon octicon-link"></span></a>sequence_equal</h3>
+
+<p>This sample uses EqualAll to see if two sequences match on all elements in the same order</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words1</span><span class="p">{</span> <span class="s">"cherry"</span><span class="p">,</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"blueberry"</span> <span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words2</span><span class="p">{</span> <span class="s">"cherry"</span><span class="p">,</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"blueberry"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">t</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words1</span><span class="p">).</span><span class="n">sequence_equal</span><span class="p">(</span><span class="n">words2</span><span class="p">);</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words3</span><span class="p">{</span> <span class="s">"apple"</span><span class="p">,</span> <span class="s">"blueberry"</span><span class="p">,</span> <span class="s">"cherry"</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">f</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">words1</span><span class="p">).</span><span class="n">sequence_equal</span><span class="p">(</span><span class="n">words3</span><span class="p">);</span>
+</pre></div>
+
+<h3>
+<a name="where" class="anchor" href="#where"><span class="octicon octicon-link"></span></a>where</h3>
+
+<p>This sample uses where to find all elements of an array less than 5.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="p">{</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">numbers</span><span class="p">).</span><span class="n">where</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="p">});</span>
+</pre></div>
+
+<p>This sample uses where to find all products that are out of stock.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">units_in_stock</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">product_name</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">product_name</span> <span class="o">&amp;&amp;</span>
+      <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span>
+      <span class="n">unit_price</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">unit_price</span> <span class="o">&amp;&amp;</span>
+      <span class="n">units_in_stock</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">units_in_stock</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span><span class="p">,</span> <span class="mi">500</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span><span class="p">,</span> <span class="mi">800</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">where</span><span class="p">([](</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">units_in_stock</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>This sample uses where to find all products that are in stock and cost more than 400 per unit.</p>
+
+<div class="highlight highlight-cpp"><pre><span class="k">struct</span> <span class="n">product</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">product_name</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">category</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">unit_price</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">units_in_stock</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">product_name</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">product_name</span> <span class="o">&amp;&amp;</span>
+      <span class="n">category</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">category</span> <span class="o">&amp;&amp;</span>
+      <span class="n">unit_price</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">unit_price</span> <span class="o">&amp;&amp;</span>
+      <span class="n">units_in_stock</span> <span class="o">==</span> <span class="n">other</span><span class="p">.</span><span class="n">units_in_stock</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">product</span><span class="o">&gt;</span> <span class="n">products</span><span class="p">{</span>
+  <span class="p">{</span> <span class="s">"iphone"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">599</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"nexus"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">499</span><span class="p">,</span> <span class="mi">500</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="s">"galaxy"</span><span class="p">,</span> <span class="s">"cellphone"</span><span class="p">,</span> <span class="mi">399</span><span class="p">,</span> <span class="mi">800</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">roar</span><span class="o">::</span><span class="n">linq</span><span class="o">::</span><span class="n">from</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">where</span><span class="p">([](</span><span class="k">const</span> <span class="n">product</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">units_in_stock</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="p">.</span><span class="n">unit_price</span> <span class="o">&gt;</span> <span class="mi">400</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright (c) 2014 <a href="mailto:bitdewy@gmail.com">bitdewy@gmail.com</a></p>
+
+<p>roar is licensed under the MIT Open Source license. For more information, see the <a href="LICENSE">LICENSE</a> file in this repository.</p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/bitdewy">bitdewy</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
