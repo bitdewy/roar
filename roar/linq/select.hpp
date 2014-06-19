@@ -16,6 +16,7 @@ namespace roar {
         typedef typename std::result_of<Selector(typename inner_cursor::element_type)>::type reference_type;
         typedef typename std::remove_reference<reference_type>::type element_type;
         typedef typename inner_cursor::cursor_category cursor_category;
+        typedef typename inner_cursor::difference_type difference_type;
 
         cursor() {}
         cursor(const inner_cursor& cur, Selector s) : cursor_(cur), selector_(std::move(s)) {}
@@ -30,6 +31,10 @@ namespace roar {
 
         void decrease() {
           cursor_.decrease();
+        }
+
+        void forget() {
+          cursor_.forget();
         }
 
         reference_type get() const {

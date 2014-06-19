@@ -16,6 +16,7 @@ namespace roar {
         typedef typename inner_cursor::element_type element_type;
         typedef typename inner_cursor::reference_type reference_type;
         typedef typename inner_cursor::cursor_category cursor_category;
+        typedef typename inner_cursor::difference_type difference_type;
 
         cursor() {}
         cursor(const inner_cursor& cur, Predicate p)
@@ -45,6 +46,10 @@ namespace roar {
               break;
             }
           }
+        }
+
+        void forget() {
+          cursor_.forget();
         }
 
         reference_type get() const {

@@ -36,6 +36,7 @@ namespace roar {
         typedef typename group_type reference_type;
         typedef typename std::remove_reference<reference_type>::type element_type;
         typedef typename inner_cursor::cursor_category cursor_category;
+        typedef typename inner_cursor::difference_type difference_type;
 
         cursor(inner_cursor cursor, KeyFn fn) {
           impl_.reset(new impl(cursor, fn));
@@ -54,6 +55,8 @@ namespace roar {
         void decrease() {
           --current_;
         }
+
+        void forget() {}
 
         reference_type get() const {
           return *current_;

@@ -16,6 +16,7 @@ namespace roar {
       typedef typename std::iterator_traits<Iterator>::value_type element_type;
       typedef typename std::iterator_traits<Iterator>::reference reference_type;
       typedef typename std::iterator_traits<Iterator>::iterator_category cursor_category;
+      typedef typename std::iterator_traits<Iterator>::difference_type difference_type;
 
       iter_cursor(const Iterator& start, const Iterator& end)
         : start_(start), end_(end), current_(start) {}
@@ -35,6 +36,10 @@ namespace roar {
       void decrease() {
         assert(("out of range", current_ != start_));
         --current_;
+      }
+
+      void forget() {
+        start_ = current_;
       }
 
       cursor get_cursor() const {

@@ -12,6 +12,7 @@
 #include "groupby.hpp"
 #include "iterator.hpp"
 #include "select.hpp"
+#include "skip.hpp"
 #include "where.hpp"
 
 namespace roar {
@@ -21,6 +22,7 @@ namespace roar {
     class linq_query {
       typedef typename Collection::cursor::element_type element_type;
       typedef typename Collection::cursor::reference_type reference_type;
+      typedef typename Collection::cursor::difference_type difference_type;
     public:
       typedef linq_iterator<typename Collection::cursor> iterator;
       // no explicit, support implicit cast
@@ -162,6 +164,9 @@ namespace roar {
         return linq_groupby<Collection, KeyFn>(collection_, std::move(fn));
       }
 
+      linq_query<linq_skip<Collection>> skip(size_t n) const {
+        return linq_skip<Collection>(collection_, n);
+      }
     private:
       Collection collection_;
     };

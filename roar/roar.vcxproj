@@ -76,6 +76,7 @@
     <ClInclude Include="linq\iterator.hpp" />
     <ClInclude Include="linq\linq.hpp" />
     <ClInclude Include="linq\select.hpp" />
+    <ClInclude Include="linq\skip.hpp" />
     <ClInclude Include="linq\where.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

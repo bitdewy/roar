@@ -1,6 +1,8 @@
 // Copyright 2014, bitdewy@gmail.com
 // The MIT License (MIT)
 
+#include <vector>
+
 #include "CppUnitTest.h"
 #include "../roar/linq/linq.hpp"
 
@@ -59,7 +61,10 @@ public:
     //    Console.WriteLine(n);
     //  }
     //}
-    Assert::Fail(L"TODO(bitdewy): ");
+    std::vector<int> numbers{ 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+    auto r = roar::linq::from(numbers).skip(4);
+    std::vector<int> expect{ 9, 8, 6, 7, 2, 0 };
+    Assert::IsTrue(std::equal(std::begin(r), std::end(r), std::begin(expect)));
   }
 
   TEST_METHOD(skipNested) {
